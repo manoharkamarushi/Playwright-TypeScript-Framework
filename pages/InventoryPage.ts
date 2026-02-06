@@ -30,7 +30,7 @@ export class InventoryPage {
         await expect(this.inventoryContainer).toBeVisible();
     }
 
-    async getProductCount(productName: String): Promise<number> {
+    async getProductCount(): Promise<number> {
         return await this.inventoryItems.count();
     }
     /* ---------- Product actions ---------- */

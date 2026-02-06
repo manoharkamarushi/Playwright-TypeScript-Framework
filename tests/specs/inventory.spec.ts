@@ -1,18 +1,36 @@
-import {expect, test} from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { LoginPage } from '../../pages/LoginPage';
-import {InventoryPage} from '../../pages/InventoryPage';
+import { InventoryPage } from '../../pages/InventoryPage';
 
-test('user can add product to cart',async({page})=>{
- const loginPage = new LoginPage(page);
- const inventoryPage = new InventoryPage(page);
 
-await loginPage.goto();
-await loginPage.loginAsStandardUser();
+test.describe('Inventor page tests', () => {
+      let inventoryPage: InventoryPage;
 
-await inventoryPage.verifyUserIsOnInventoryPage();
-await inventoryPage.addProductToCardByName('Sauce Labs Onesie');
+    test.beforeEach(async ({ page }) => {
+        const loginPage = new LoginPage(page);
+        inventoryPage = new InventoryPage(page);
 
-const cartCount =await inventoryPage.getCartItemCount();
-expect(cartCount).toBe(1);
+        await loginPage.goto();
+        await loginPage.loginAsStandardUser();
+        await inventoryPage.verifyUserIsOnInventoryPage();
+    });
+
+    test('user can add product to cart', async ({ page }) => {
+
+        await inventoryPage.addProductToCardByName('Sauce Labs Onesie');
+        const cartCount = await inventoryPage.getCartItemCount();
+        expect(cartCount).toBe(1);
+
+    });
+    test('User can see all products after login', async ({ page }) => {
+        const productCount = await inventoryPage.getProductCount();
+        expect(productCount).toBeGreaterThan(0);
+    });
+
+    test.afterEach(async({page}, testInfo)=>{
+        if(testInfo.status !== testInfo.expectedStatus){
+            console.log('Test Failed: ${testInfo.title}');
+        }
+    });
 
 });
