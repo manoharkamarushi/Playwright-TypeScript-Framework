@@ -27,7 +27,11 @@ export class LoginPage {
     }
 
     async loginAsStandardUser(): Promise<void> {
-        await this.login('standard_user', 'secret_sauce');
+        //! tells TypeScript: “I know this value exists.”
+        const username = process.env.STANDARD_USERNAME!;
+        const password = process.env.STANDARD_PASSWORD!;
+
+        await this.login(username, password);
     }
     async loginAsVisualUser(): Promise<void> {
         await this.login('visual_user', 'secret_sauce');

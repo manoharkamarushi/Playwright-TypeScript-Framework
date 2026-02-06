@@ -5,7 +5,10 @@ import { InventoryPage } from '../../pages/InventoryPage';
 
 test.describe('Inventor page tests', () => {
       let inventoryPage: InventoryPage;
+//LoginPage is only required for setup inside the hook, while InventoryPage is reused across tests, 
+//so we keep variables scoped to where they’re needed
 
+//This way we avoid promoting variables to wider scope unliess they are required.
     test.beforeEach(async ({ page }) => {
         const loginPage = new LoginPage(page);
         inventoryPage = new InventoryPage(page);
