@@ -1,4 +1,6 @@
-import { Page, Locator,expect } from '@playwright/test'
+import { Page, Locator, expect } from '@playwright/test';
+import { UserRole } from '../utils/auth/userRoles';
+import { credentialsMap } from '../utils/auth/credentialsMap';
 
 export class LoginPage {
     private readonly page: Page;
@@ -20,22 +22,19 @@ export class LoginPage {
         await this.page.goto('/');
     }
 
-    async login(username: string, password: string): Promise<void> {
-        await this.usernameInput.fill(username);
-        await this.passwordInput.fill(password);
-        await this.loginButton.click();
-    }
+   // Low-level action (NO role logic)
+  async login(username: string, password: string): Promise<void> {
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.loginButton.click();
+  }
 
-    async loginwithEnvCrendentials(): Promise<void> {
-        //! tells TypeScript: “I know this value exists.”
-        const username = process.env.STANDARD_USERNAME!;
-        const password = process.env.STANDARD_PASSWORD!;
+  //  Role-based login (uses mapping)
+  async loginAs(role: UserRole): Promise<void> {
+    const { username, password } = credentialsMap[role];
+    await this.login(username, password);
+  }
 
-        await this.login(username, password);
-    }
-    async loginAsVisualUser(): Promise<void> {
-        await this.login('visual_user', 'secret_sauce');
-    }
     async verifyLoginSuccessful(): Promise<void> {
         await expect(this.page).toHaveURL(/inventory/);
     }

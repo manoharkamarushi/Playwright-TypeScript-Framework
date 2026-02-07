@@ -1,7 +1,7 @@
 
 import {test, expect} from '../../fixtures/testFixture'
 
-
+test.use({ role: 'champuser' });
 test.describe('Inventor page tests', () => {
 
     test.skip('user can add product to cart', async ({ inventoryPage }) => {
@@ -16,7 +16,7 @@ test.describe('Inventor page tests', () => {
         expect(productCount).toBeGreaterThan(0);
     });
 
-    test.afterEach(async({inventoryPage}, testInfo)=>{
+    test.afterEach(async({}, testInfo)=>{
         if(testInfo.status !== testInfo.expectedStatus){
             console.log('Test Failed: ${testInfo.title}');
         }
