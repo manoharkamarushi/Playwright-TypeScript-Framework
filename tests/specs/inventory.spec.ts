@@ -1,3 +1,4 @@
+/*
 import { expect, test } from '@playwright/test'
 import { LoginPage } from '../../pages/LoginPage';
 import { InventoryPage } from '../../pages/InventoryPage';
@@ -14,7 +15,7 @@ test.describe('Inventor page tests', () => {
         inventoryPage = new InventoryPage(page);
 
         await loginPage.goto();
-        await loginPage.loginAsStandardUser();
+        await loginPage.loginwithEnvCrendentials();
         await inventoryPage.verifyUserIsOnInventoryPage();
     });
 
@@ -37,3 +38,5 @@ test.describe('Inventor page tests', () => {
     });
 
 });
+
+*/

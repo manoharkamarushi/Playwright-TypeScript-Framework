@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test'
+import { Page, Locator,expect } from '@playwright/test'
 
 export class LoginPage {
     private readonly page: Page;
@@ -26,7 +26,7 @@ export class LoginPage {
         await this.loginButton.click();
     }
 
-    async loginAsStandardUser(): Promise<void> {
+    async loginwithEnvCrendentials(): Promise<void> {
         //! tells TypeScript: “I know this value exists.”
         const username = process.env.STANDARD_USERNAME!;
         const password = process.env.STANDARD_PASSWORD!;
@@ -35,6 +35,9 @@ export class LoginPage {
     }
     async loginAsVisualUser(): Promise<void> {
         await this.login('visual_user', 'secret_sauce');
+    }
+    async verifyLoginSuccessful(): Promise<void> {
+        await expect(this.page).toHaveURL(/inventory/);
     }
 
 }
