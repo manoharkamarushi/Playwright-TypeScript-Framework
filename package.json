@@ -3,7 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:smoke": "npx playwright test --grep @smoke",
+    "test:regression": "npx playwright test --grep @regression",
+    "test:e2e": "npx playwright test --grep @e2e",
+    "test:p1": "npx playwright test --grep @p1",
+    "test:inventory": "npx playwright test --grep @inventory",
+    "test:approval": "npx playwright test --grep @approval",
+    "test:checklist": "npx playwright test --grep @checklist",
+    "test:variance": "npx playwright test --grep @variance",
+    "validate:tags": "ts-node utils/validateTags.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/manoharkamarushi/Playwright-TypeScript-Framework.git"
@@ -18,7 +28,11 @@
   "homepage": "https://github.com/manoharkamarushi/Playwright-TypeScript-Framework#readme",
   "devDependencies": {
     "@playwright/test": "^1.58.1",
+    "@types/glob": "^8.1.0",
     "@types/node": "^25.2.1",
     "dotenv": "^17.2.4"
+  },
+  "dependencies": {
+    "pg": "^8.18.0"
   }
 }
