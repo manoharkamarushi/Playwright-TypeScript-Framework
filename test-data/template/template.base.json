@@ -1,0 +1,7 @@
+{
+  "clientName": "ABC Corp",
+  "startDate": "2026-03-01",
+  "durationMonths": 12,
+  "revenue": 100000,
+  "cop": 60000
+}

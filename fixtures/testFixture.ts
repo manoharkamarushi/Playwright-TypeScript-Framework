@@ -2,6 +2,7 @@
 import { test as base, BrowserContext } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
+import { ProjectPage } from '../pages/ProjectPage';
 import { UserRole } from '../utils/auth/userRoles';
 import { credentialsMap } from '../utils/auth/credentialsMap';
 import { storageStateMap } from '../utils/auth/storageStateMap';
@@ -10,6 +11,7 @@ import { dbPool, executeQuery } from '../utils/db/dbclient'
 type MyFixtures = {
     loginPage: LoginPage;
     inventoryPage: InventoryPage;
+    projectPage: ProjectPage;
     role: UserRole;
     dbQuery: typeof executeQuery;
 };
