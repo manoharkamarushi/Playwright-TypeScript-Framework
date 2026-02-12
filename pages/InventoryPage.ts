@@ -54,4 +54,8 @@ export class InventoryPage {
         }
         return 0;
     }
+
+    async createItem(productName: string):Promise<void>{
+
+    }
 }

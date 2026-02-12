@@ -7,12 +7,14 @@ dotenv.config({
   path: `./env/${env}.env`
 });
 
+const isCI = !!process.env.CI;
 
+if(!isCI){
 console.log('ENV:', process.env.ENV);
 console.log('BASE_URL:', process.env.BASE_URL);
 console.log('User:', process.env.STANDARD_USERNAME);
+}
 
-const isCI = !!process.env.CI;
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -25,7 +27,7 @@ const isCI = !!process.env.CI;
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests/specs',
+  testDir: './tests', //updated for feature-based structure
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -35,7 +37,10 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: isCI ? 2 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    ['list'], // console output
+    ['html', { outputFolder: 'playwright-report', open: 'never' }]
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   timeout: 60 * 1000,
   expect: {
@@ -46,7 +51,7 @@ export default defineConfig({
     baseURL: process.env.BASE_URL,
     headless: isCI,
     screenshot: "only-on-failure",
-    video: "on-first-retry",
+    video:  isCI ? 'retain-on-failure' : 'off',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

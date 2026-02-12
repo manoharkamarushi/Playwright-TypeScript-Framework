@@ -5,15 +5,22 @@ import { InventoryPage } from '../pages/InventoryPage';
 import { UserRole } from '../utils/auth/userRoles';
 import { credentialsMap } from '../utils/auth/credentialsMap';
 import { storageStateMap } from '../utils/auth/storageStateMap';
+import { dbPool, executeQuery } from '../utils/db/dbclient'
 
 type MyFixtures = {
     loginPage: LoginPage;
     inventoryPage: InventoryPage;
     role: UserRole;
+    dbQuery: typeof executeQuery;
 };
+
 
 //“We extend Playwright’s base test to add custom fixtures.”
 export const test = base.extend<MyFixtures>({
+
+    dbQuery: async ({ }, use) => {
+        await use(executeQuery);
+    },
 
     // default role (can be overridden per test)
     role: ['champuser', { option: true }],
@@ -37,6 +44,8 @@ export const test = base.extend<MyFixtures>({
 
         await context.close();
     },
+
+    
 });
 
 export { expect } from '@playwright/test';
