@@ -1,0 +1,118 @@
+trigger:
+  branches:
+    include:
+      - main
+      - qa
+
+pr:
+  branches:
+    include:
+      - qa
+
+schedules:
+  - cron: "0 2 * * *"   # 2 AM UTC nightly regression
+    displayName: Nightly Regression
+    branches:
+      include:
+        - main
+    always: true
+
+variables:
+  NODE_VERSION: '18.x'
+  ENV: 'qa'
+
+stages:
+
+# -------------------------------
+# Stage 1: Smoke on Push / PR
+# -------------------------------
+- stage: SmokeTests
+  displayName: "Run Smoke Tests"
+  condition: |
+    or(
+      eq(variables['Build.Reason'], 'IndividualCI'),
+      eq(variables['Build.Reason'], 'PullRequest')
+    )
+  jobs:
+    - job: Smoke
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - task: NodeTool@0
+          inputs:
+            versionSpec: $(NODE_VERSION)
+
+        - script: npm ci
+          displayName: Install Dependencies
+
+        - script: npx playwright install --with-deps
+          displayName: Install Playwright Browsers
+
+        - script: ENV=$(ENV) npm run test:smoke
+          displayName: Run Smoke Tests
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: playwright-report
+            artifact: smoke-report
+          condition: always()
+
+# -------------------------------
+# Stage 2: Nightly Regression
+# -------------------------------
+- stage: RegressionTests
+  displayName: "Run Regression Tests"
+  condition: eq(variables['Build.Reason'], 'Schedule')
+  jobs:
+    - job: Regression
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - task: NodeTool@0
+          inputs:
+            versionSpec: $(NODE_VERSION)
+
+        - script: npm ci
+          displayName: Install Dependencies
+
+        - script: npx playwright install --with-deps
+          displayName: Install Playwright Browsers
+
+        - script: ENV=qa npm run test:regression
+          displayName: Run Regression Tests
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: playwright-report
+            artifact: regression-report
+          condition: always()
+
+# -------------------------------
+# Stage 3: Manual E2E Execution
+# -------------------------------
+- stage: E2ETests
+  displayName: "Run E2E Tests (Manual)"
+  condition: eq(variables['Build.Reason'], 'Manual')
+  jobs:
+    - job: E2E
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - task: NodeTool@0
+          inputs:
+            versionSpec: $(NODE_VERSION)
+
+        - script: npm ci
+          displayName: Install Dependencies
+
+        - script: npx playwright install --with-deps
+          displayName: Install Playwright Browsers
+
+        - script: ENV=staging npm run test:e2e -- --workers=1
+          displayName: Run E2E Tests
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: playwright-report
+            artifact: e2e-report
+          condition: always()
